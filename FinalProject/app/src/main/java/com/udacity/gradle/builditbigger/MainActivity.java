@@ -1,7 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
@@ -10,14 +9,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
 import com.example.psych.myapplication.backend.myApi.MyApi;
-
-
-
-
-import com.example.JokeSmith;
-
-import com.joketellerlibrary.JokeTellerActivity;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import java.io.IOException;
 
@@ -54,10 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-
-        Intent intent = new Intent(this, JokeTellerActivity.class);
-        intent.putExtra(Intent.EXTRA_REFERRER, new JokeSmith().getJoke());
-        startActivity(intent);
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(getApplicationContext(), ""));
 //        Toast.makeText(this, new JokeSmith().getJoke(), Toast.LENGTH_SHORT).show();
     }
 
@@ -68,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Pair<Context, String>... params) {
-            if(myApiService == null) {  // Only do this once
+            if (myApiService == null) {  // Only do this once
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                                 new AndroidJsonFactory(), null)
                                 // options for running against local devappserver
@@ -90,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
             String name = params[0].second;
 
             try {
-                return myApiService.sayHi(name).execute().getData();
+//                return myApiService.sayHi(name).execute().getData();
+                return myApiService.getJokes().execute().getData();
             } catch (IOException e) {
                 return e.getMessage();
             }
@@ -99,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+//            Intent intent = new Intent(MainActivity.this, JokeTellerActivity.class);
+//            intent.putExtra(Intent.EXTRA_REFERRER, new JokeSmith().getJoke());
+//            startActivity(intent);
         }
     }
 

@@ -17,13 +17,13 @@ import javax.inject.Named;
  * An endpoint class we are exposing
  */
 @Api(
-                name = "myApi",
-                version = "v1",
-                namespace = @ApiNamespace(
-                                ownerDomain = "backend.myapplication.psych.example.com",
-                                ownerName = "backend.myapplication.psych.example.com",
-                                packagePath = ""
-                )
+    name = "myApi",
+    version = "v1",
+    namespace = @ApiNamespace(
+                    ownerDomain = "backend.myapplication.psych.example.com",
+                    ownerName = "backend.myapplication.psych.example.com",
+                    packagePath = ""
+    )
 )
 public class MyEndpoint {
 
