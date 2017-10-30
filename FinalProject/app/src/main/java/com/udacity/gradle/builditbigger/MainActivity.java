@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import com.example.psych.myapplication.backend.myApi.MyApiimport;
+
 
 
 
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-        private static MyApi myApiService = null;
+        private MyApi myApiService = null;
         private Context context;
 
         @Override
@@ -99,8 +101,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         }
     }
-
-
-
 
 }

@@ -4,7 +4,7 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/HelloEndpoints
 */
 
-package com.example.Psych.myapplication.backend;
+package com.example.psych.myapplication.backend;
 
 import com.example.JokeSmith;
 import com.google.api.server.spi.config.Api;
@@ -20,8 +20,8 @@ import javax.inject.Named;
                 name = "myApi",
                 version = "v1",
                 namespace = @ApiNamespace(
-                                ownerDomain = "backend.myapplication.Psych.example.com",
-                                ownerName = "backend.myapplication.Psych.example.com",
+                                ownerDomain = "backend.myapplication.psych.example.com",
+                                ownerName = "backend.myapplication.psych.example.com",
                                 packagePath = ""
                 )
 )

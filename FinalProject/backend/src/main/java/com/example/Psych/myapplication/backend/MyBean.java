@@ -1,4 +1,4 @@
-package com.example.Psych.myapplication.backend;
+package com.example.psych.myapplication.backend;
 
 /**
  * The object model for the data we are sending through endpoints
