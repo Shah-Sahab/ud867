@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'password'
+            storeFile file('/Users/Psych/AndroidStudioProjects/ud867_final/FinalProject/releaseKeystore.jks')
+            storePassword 'password'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
-
     defaultConfig {
         applicationId "com.udacity.gradle.builditbigger"
         minSdkVersion 16
@@ -16,17 +23,34 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    productFlavors {
+        free {
+            applicationId "com.udacity.gradle.builditbigger.free"
+//            applicationIdSuffix ".free"
+        }
+
+        paid {
+            applicationId "com.udacity.gradle.builditbigger.paid"
+//            applicationIdSuffix ".paid"
+        }
+    }
+    sourceSets {
+        free {
+            manifest.srcFile 'src/free/AndroidManifest.xml'
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile project(":JokeSmithsManualProject")
-    compile project(":joketellerlibrary")
+    compile project(':JokeSmithsManualProject')
+    compile project(':joketellerlibrary')
     compile project(path: ':backend', configuration: 'android-endpoints')
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.google.android.gms:play-services-ads:9.8.0'
