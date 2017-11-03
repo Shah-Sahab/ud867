@@ -11,6 +11,9 @@ public class JokeTellerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joke_teller);
-        ((TextView)findViewById(R.id.jokeTellerTextView)).setText(getIntent().getExtras().getString(Intent.EXTRA_REFERRER));
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Intent.EXTRA_REFERRER)) {
+            ((TextView) findViewById(R.id.jokeTellerTextView)).setText(intent.getExtras().getString(Intent.EXTRA_REFERRER));
+        }
     }
 }

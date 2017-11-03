@@ -1,9 +1,13 @@
 package com.udacity.gradle.builditbigger;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +26,12 @@ import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    private ProgressDialog mProgressDialog;
+    private CountingIdlingResource mIdlingResource;
+    private String mResult;
+
+    private final String idlingResourceName = "AsyncTask Idling Resource";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
+        showPleaseWaitProgressDialog();
+        incrementIdlingResource();
         new EndpointsAsyncTask().execute(getApplicationContext());
-//        Toast.makeText(this, new JokeSmith().getJoke(), Toast.LENGTH_SHORT).show();
     }
-
 
     class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         private MyApi myApiService = null;
@@ -84,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             context = params[0];
 
             try {
-//                return myApiService.sayHi(name).execute().getData();
                 return myApiService.getJokes().execute().getData();
             } catch (IOException e) {
                 return e.getMessage();
@@ -93,11 +102,61 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(MainActivity.this, JokeTellerActivity.class);
-            intent.putExtra(Intent.EXTRA_REFERRER, new JokeSmith().getJoke());
-            startActivity(intent);
+            dismissProgressDialog();
+            showJokeTellerActivity(result);
+        }
+
+    }
+
+    private void showJokeTellerActivity(String result) {
+        mResult = result;
+        decrementIdlingResource();
+        Toast.makeText(getApplicationContext(), mResult, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(MainActivity.this, JokeTellerActivity.class);
+        intent.putExtra(Intent.EXTRA_REFERRER, new JokeSmith().getJoke());
+        startActivity(intent);
+    }
+
+    private void showPleaseWaitProgressDialog() {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setTitle(getString(R.string.loading_string));
+        mProgressDialog.setMessage(getString(R.string.please_wait_string));
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
+    private void incrementIdlingResource() {
+        if (mIdlingResource != null) {
+            mIdlingResource.increment();
+        }
+    }
+
+    private void decrementIdlingResource() {
+        if (mIdlingResource != null) {
+            mIdlingResource.decrement();
+        }
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link CountingIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public CountingIdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new CountingIdlingResource(idlingResourceName);
+        }
+        return mIdlingResource;
+    }
+
+    @VisibleForTesting
+    public String getResult() {
+        return mResult;
+    }
 }
